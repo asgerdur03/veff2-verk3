@@ -1,6 +1,7 @@
 import exp from "constants";
 import {z} from 'zod';
 import { PrismaClient } from "@prisma/client";
+import { generateSlug } from "./slug.js";
 
 // zod validation shit
 const categorySchema = z.object({
@@ -71,15 +72,64 @@ export async function getCategory(slug: string):Promise<Category|null> {
 
 }
 
+export async function createCategory(title: string) {
+    const prisma = new PrismaClient()
+
+    const slug = generateSlug(title);
+
+    const category = await prisma.categories.create({
+        data: {
+            title: title,
+            slug: slug
+        }
+    })
+
+    return category
+
+}
+
+export async function deleteCategory(slug: string) {
+    const prisma = new PrismaClient()
+    const category = await prisma.categories.delete({
+        where: {
+            slug: slug
+        }
+    })
+
+    return category
+}
 
 
+export async function updateCategory(slug: string, title: string) {
+    const prisma = new PrismaClient()
 
+    // Á slug að breytast eða ekki?
+    const category = await prisma.categories.update({
+        where: {
+            slug: slug
+        },
+        data: {
+            title: title
+        }
+    })
 
-
+    return category
+}
 
 // Validates category using zod
 export function validateCategory(categoryToValidate: unknown) {
     const result = categoryToCreateSchema.safeParse(categoryToValidate);
 
     return result;
+}
+
+
+export async function categoryExists(title: string) {
+    const slug = generateSlug(title);
+    const category = await getCategory(slug);
+
+    if (category) {
+        return true;
+    }
+    return false;
 }

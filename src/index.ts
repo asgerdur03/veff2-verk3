@@ -1,7 +1,8 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { getCategories, getCategory, validateCategory} from './categories.db.js'
-import { z } from 'zod'
+import { createCategory, deleteCategory, getCategory, 
+        getCategories, validateCategory, categoryExists,
+        updateCategory } from './categories.db.js'
 
 const app = new Hono()
 
@@ -12,6 +13,9 @@ app.get('/', (c) => {
   return c.json(data)
 })
 
+// CATEGORIES
+
+// Lists all categories
 app.get('/categories', async(c) => {
   // skilar öllum flokkum
   let categories;
@@ -26,6 +30,7 @@ app.get('/categories', async(c) => {
   return c.json(categories)
 })
 
+// Lists single category
 app.get('/categories/:slug', async (c) => {
   const slug = c.req.param('slug');
   const categories =await getCategory(slug);
@@ -37,12 +42,12 @@ app.get('/categories/:slug', async (c) => {
   return c.json(categories)
 })
 
-// 201 created, úr fyrirlestri
+// create new category
 app.post('/category', async (c) => {
   let categoryToCreate: unknown;
   try {
     categoryToCreate = await c.req.json();
-    console.log(categoryToCreate);
+    console.log("categoryToCreate", categoryToCreate);
   }catch (error) {
     console.error(error);
     return c.json({error: 'Invalid Json'},400);	
@@ -54,22 +59,86 @@ app.post('/category', async (c) => {
     return c.json({error: 'Invalid data', errors: validCategory.error.flatten()}, 400);
   }
 
-  return c.json({message: 'create new category:'}, 201);
+  const exists = await categoryExists(validCategory.data.title);
+  console.log("exists", exists);
+
+  console.log("title", validCategory.data.title);
+
+  let cat;
+  if (exists) {
+    return c.json({error: 'Category already exists'}, 400);
+  }else{
+      cat =await createCategory(validCategory.data.title);
+
+  }
+
+  return c.json({message: 'create new category:', cat}, 201);
 })
 
-app.patch('/category/:slug', (c) => {
+// update existing category
+app.patch('/category/:slug', async(c) => {
   const slug = c.req.param('slug');
 
-  return c.json({message: 'edit category with slug: ' + slug});
+  const {title: newTitle} = await c.req.json();
+
+  const catToEdit = await getCategory(slug);
+
+  if (!catToEdit) {
+    return c.json({error: 'Category not found'}, 404);
+  }
+
+  if (!newTitle) {
+    return c.json({error: 'Missing title'}, 400);
+  }
+
+  const editedCategory = await updateCategory(slug, newTitle);
+  
+  return c.json({message: 'edit category with slug: ' + editedCategory.slug}, 200);
 })
 
-app.delete('/category/:slug', (c) => {
+// delete category
+app.delete('/category/:slug', async(c) => {
+  const slug = c.req.param('slug');
+  let catToDelete;
+
+  try {
+      catToDelete = await getCategory(slug);
+      console.log("catToDelete", catToDelete);
+
+      if (!catToDelete) {
+          return c.json({error: 'Category not found'}, 404);
+      }
+      catToDelete = await deleteCategory(slug);
+  }
+  catch (error) {
+      console.error(error);
+      return c.json({error: "Error "}, 500);
+  }
+  //return c.json({message: 'delete category: ' + catToDelete.title	});
+  return c.body(null, 204);
+})
+
+
+// QUESTIONS
+
+app.get('/questions', (c) => {
+
+
+  return c.json({message: 'all questions'})
+});
+
+app.get('/questions/category/:slug', (c) => {
+
   const slug = c.req.param('slug');
 
-  return c.json({message: 'delete category with slug: ' + slug});
-})
+  return c.json({message: 'questions for category ' + slug})
+});
 
 
+
+
+
+// OTHER SHIT
 app.notFound((c) => {
   return c.text('Custom 404 Message', 404)
 })

@@ -13,9 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Categories {
+model categories {
   id    Int     @id @default(autoincrement())
   title String  @unique
   slug  String  @unique
 }
 
+model questions {
+  id    Int     @id @default(autoincrement())
+
+}
+
+
+model answers{
+  id    Int     @id @default(autoincrement())
+
+}
