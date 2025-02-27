@@ -13,19 +13,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model categories {
+model Categories {
   id    Int     @id @default(autoincrement())
   title String  @unique
   slug  String  @unique
+  questions Questions[]
 }
 
-model questions {
+model Questions {
   id    Int     @id @default(autoincrement())
-
+  question String
+  categoryId Int
+  category Categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  answers Answers[]
 }
 
-
-model answers{
+model Answers{
   id    Int     @id @default(autoincrement())
+  answer String
+  correct Boolean
+  questionId Int
+  question Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
 }

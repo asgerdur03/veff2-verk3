@@ -2,7 +2,8 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { createCategory, deleteCategory, getCategory, 
         getCategories, validateCategory, categoryExists,
-        updateCategory } from './categories.db.js'
+        updateCategory} from './categories.db.js'
+import { getQuestions, getQuestionsByCategory, getAnswersByQuestionId } from './questions.db.js'
 
 const app = new Hono()
 
@@ -121,20 +122,72 @@ app.delete('/category/:slug', async(c) => {
 
 // QUESTIONS
 
-app.get('/questions', (c) => {
+// Lists all questions
+app.get('/questions', async(c) => {
 
+  let questions;
 
-  return c.json({message: 'all questions'})
+  try {
+      questions = await getQuestions();
+  }
+  catch (error) {
+      console.error(error);
+      return c.json({error: 'Error fetching questions'}, 500);
+  }
+
+  return c.json(questions)
 });
 
-app.get('/questions/category/:slug', (c) => {
+// Lists questions by category
+app.get('/questions/category/:slug', async(c) => {
 
   const slug = c.req.param('slug');
+  
+  const category = await getCategory(slug);
+  console.log("category", category);
 
-  return c.json({message: 'questions for category ' + slug})
+  if (!category) {
+    return c.json({error: 'Category not found'}, 404);
+  }
+
+  const catId = category.id;
+
+  console.log("catId", catId);
+
+  let questions;
+
+  try {
+      questions = await getQuestionsByCategory(catId);
+
+      return c.json(questions);
+  }
+  catch (error) {
+      console.error(error);
+      return c.json({error: 'Error fetching questions'}, 500);
+  }
+
 });
 
 
+// ANSWERS
+
+// list  all answers belonging to a single question
+// USE: loop, forEach question with id, get all answers with questionId
+app.get('/answers/:questionId', async(c) => {
+
+  try {
+    const questionId = parseInt(c.req.param('questionId'));
+    
+    const answers = await getAnswersByQuestionId(questionId);
+    console.log("answers", answers);
+    return c.json(answers);
+  }
+  catch (error) {
+      console.error(error);
+      return c.json({error: 'Error fetching answers'}, 500);
+  }
+  
+})
 
 
 

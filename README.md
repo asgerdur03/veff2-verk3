@@ -24,18 +24,22 @@ Category (gefið í lýsingu)
 - [x] `PATCH /category/:slug` 200, 400, 404, 500
 - [x] `DELETE /category/:slug` 204, 404, 500
 
-Questions (questions and answers)
-
-- [ ] `GET /questions` All questions
-- [ ] `GET /questions/category/:slug` questions by category
+---
+Questions
+- [x] `GET /questions` All questions
+- [x] `GET /questions/category/:slug` questions by category
 --- 
+
+Answers (seperate or )
+- [x] `GET /answers/:questionId` All answers to a single question
+
+---
+
 ATH! Ekki viss með POST og PATCH, hafa eitt fyrir spurningu og svör eða sitthvort fyrir spurningu og sitthvot fyrir svör
-- [ ] `POST /questions` Create question
-- [ ] `PATCH /questions/:slug` edit question
+- [ ] `POST /questions` Create question (and answers?)
+- [ ] `PATCH /questions/:slug` edit question (and answers?)
 
 
-- Skoðað spurningar.
-- Skoða spurningar eftir flokk.
 - Búa til spurningu.
 - Breyta spurningu.
 

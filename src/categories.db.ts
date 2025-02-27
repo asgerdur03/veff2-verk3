@@ -3,6 +3,8 @@ import {z} from 'zod';
 import { PrismaClient } from "@prisma/client";
 import { generateSlug } from "./slug.js";
 
+let prisma = new PrismaClient();
+
 // zod validation shit
 const categorySchema = z.object({
     id: z.number(),
@@ -44,7 +46,7 @@ export async function getCategories(limit=10, offset?: number):
 Promise<Array<Category>> {
 
     // select (limit) from categories where id > offset
-    const prisma = new PrismaClient()
+    //const prisma = new PrismaClient()
 
     // mock, eyða
     /*
@@ -60,7 +62,7 @@ Promise<Array<Category>> {
 // gets one category
 export async function getCategory(slug: string):Promise<Category|null> {
 
-    const prisma = new PrismaClient()
+    //const prisma = new PrismaClient()
 
     const category = await prisma.categories.findUnique({
         where: {
@@ -73,7 +75,7 @@ export async function getCategory(slug: string):Promise<Category|null> {
 }
 
 export async function createCategory(title: string) {
-    const prisma = new PrismaClient()
+    //const prisma = new PrismaClient()
 
     const slug = generateSlug(title);
 
@@ -89,7 +91,7 @@ export async function createCategory(title: string) {
 }
 
 export async function deleteCategory(slug: string) {
-    const prisma = new PrismaClient()
+    //const prisma = new PrismaClient()
     const category = await prisma.categories.delete({
         where: {
             slug: slug
@@ -101,7 +103,7 @@ export async function deleteCategory(slug: string) {
 
 
 export async function updateCategory(slug: string, title: string) {
-    const prisma = new PrismaClient()
+    //const prisma = new PrismaClient()
 
     // Á slug að breytast eða ekki?
     const category = await prisma.categories.update({
