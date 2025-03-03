@@ -5,8 +5,7 @@
     "dev": "tsx watch src/index.ts",
     "test": "vitest",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "postinstall": "npx prisma generate && npx prisma migrate deploy"
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.8",
