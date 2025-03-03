@@ -17,7 +17,6 @@ open http://localhost:3000
 
 Category (gefið í lýsingu)
 
-! ATH - Á eftir að skoða 500 kóðana í flestu 
 - [x] `GET /categories` 200, 500
 - [x] `Get /categories/:slug` 200, 404, 500
 - [x] `POST /category ` 201, 400, 500
@@ -28,36 +27,38 @@ Category (gefið í lýsingu)
 Questions
 - [x] `GET /questions` All questions
 - [x] `GET /questions/category/:slug` questions by category
+- [x] `DELETE /questions/:id` deltete question (and answers)
+- [x] `POST /questions` Create question
+- [x] `PATCH /questions/:id` edit question 
+- [x] `GET /questions/:id` singular question 
+
+
 --- 
 
 Answers (seperate or )
-- [x] `GET /answers/:questionId` All answers to a single question
-
+- [x] `GET /answers/question/:id` All answers to a single question
+- [x] `GET /answers` All answers
+- [x] `GET /answers/:id` single answers
+- [x] `POST /answers` create new answer
+- [x] `PATCH /answers/:id` edit single answer with id = ...
+- [x] `DELETE /answers/:id` delete single answer with id = ...
 ---
-
-ATH! Ekki viss með POST og PATCH, hafa eitt fyrir spurningu og svör eða sitthvort fyrir spurningu og sitthvot fyrir svör
-- [ ] `POST /questions` Create question (and answers?)
-- [ ] `PATCH /questions/:slug` edit question (and answers?)
-
-
-- Búa til spurningu.
-- Breyta spurningu.
 
 
 Annað 
 
 - [ ] Setja upp automatic database með prisma Seeding
-- [ ] Nota Zod fyrir staðfestingu gagan
-- [ ] nota xss fyrir skráningu gagna
+- [x] Nota Zod fyrir staðfestingu gagan (bæta við kröfum í questions)
+- [x] nota xss fyrir skráningu gagna
 - [ ] Setja upp próf
-- [ ] Github actions
+- [x] Github actions (laga fyrir skil)
 - [ ] Setja upp vef á t.d render, tengt við postgres og github
-- [ ] Kennurum í repo
+- [ ] Bæta kennurum í repo
 ----
 
-- [ ] 40% — Vefþjónustur útfærðar með Hono.
-- [ ] 30% — Unnið með gögn, þau staðfest, hugað að öryggi og vistuð í postgres grunni gegnum Prisma.
-- [ ] 20% — TypeScript notað.
+- [x] 40% — Vefþjónustur útfærðar með Hono.
+- [x] 30% — Unnið með gögn, þau staðfest, hugað að öryggi og vistuð í postgres grunni gegnum Prisma.
+- [x] 20% — TypeScript notað.
 - [ ] 10% — Tæki, tól og test, verkefni sett upp í hýsingu.
 
 

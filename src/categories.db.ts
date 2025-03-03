@@ -2,6 +2,7 @@ import exp from "constants";
 import {z} from 'zod';
 import { PrismaClient } from "@prisma/client";
 import { generateSlug } from "./slug.js";
+import xss from 'xss';
 
 let prisma = new PrismaClient();
 
@@ -53,10 +54,15 @@ Promise<Array<Category>> {
     await prisma.categories.createMany({
         data: mockCategories
     })*/
-    const categories =  await prisma.categories.findMany()
+    const categories =  await prisma.categories.findMany(
+        {
+            take: limit,
+            skip: offset
+        }
+    )
 
 
-    return categories;
+    return categories ?? null;
 }
 
 // gets one category
@@ -76,17 +82,17 @@ export async function getCategory(slug: string):Promise<Category|null> {
 
 export async function createCategory(title: string) {
     //const prisma = new PrismaClient()
-
+    const safeTitle = xss(title);
     const slug = generateSlug(title);
 
     const category = await prisma.categories.create({
         data: {
-            title: title,
+            title: safeTitle,
             slug: slug
         }
     })
 
-    return category
+    return category?? null;
 
 }
 
@@ -104,6 +110,7 @@ export async function deleteCategory(slug: string) {
 
 export async function updateCategory(slug: string, title: string) {
     //const prisma = new PrismaClient()
+    const safeTitle = xss(title);
 
     // Á slug að breytast eða ekki?
     const category = await prisma.categories.update({
@@ -111,7 +118,7 @@ export async function updateCategory(slug: string, title: string) {
             slug: slug
         },
         data: {
-            title: title
+            title: safeTitle
         }
     })
 
