@@ -1,12 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
-import app from "../src/index.js"; 
 import { generateSlug } from "../src/slug.js";
-import { PrismaClient } from "@prisma/client";
 import { getCategories, getCategory, createCategory, deleteCategory} from "../src/categories.db.js";
 
-import request from "supertest";
-import { beforeEach } from "node:test";
-import exp from "constants";
+
 
 
 describe("Basic Vitest Check", () => {
