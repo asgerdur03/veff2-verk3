@@ -25,4 +25,4 @@ jobs:
       - name: Test
         # Run this even if linting failed
         if: always()
-        run: npm run test
+        run: npm test
