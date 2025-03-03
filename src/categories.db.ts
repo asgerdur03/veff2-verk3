@@ -1,12 +1,13 @@
-import exp from "constants";
 import {z} from 'zod';
-import { PrismaClient } from "@prisma/client";
+//import { PrismaClient } from "@prisma/client";
 import { generateSlug } from "./slug.js";
 import xss from 'xss';
 
-let prisma = new PrismaClient();
+//let prisma = new PrismaClient();
+import prisma from './client.js';
 
 // zod validation shit
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const categorySchema = z.object({
     id: z.number(),
     slug: z.string(),
@@ -19,25 +20,6 @@ const categoryToCreateSchema = z.object({
 
 
 type Category = z.infer<typeof categorySchema>;
-
-
-const mockCategories: Array<Category> = [
-    {
-        id: 1,
-        slug: 'html',
-        title: 'Html'
-    },
-    {
-        id: 2,
-        slug: 'css',
-        title: 'Css'
-    },
-    {
-        id: 3,
-        slug: 'js',
-        title: 'JavaScript'
-    }
-]
 
 
 // spurningarmenrki þýðir optional parameter
@@ -83,7 +65,7 @@ export async function getCategory(slug: string):Promise<Category|null> {
 export async function createCategory(title: string) {
     //const prisma = new PrismaClient()
     const safeTitle = xss(title);
-    const slug = generateSlug(title);
+    const slug = generateSlug(safeTitle);
 
     const category = await prisma.categories.create({
         data: {
@@ -111,11 +93,12 @@ export async function deleteCategory(slug: string) {
 export async function updateCategory(slug: string, title: string) {
     //const prisma = new PrismaClient()
     const safeTitle = xss(title);
+    const safeSlug = generateSlug(safeTitle);
 
     // Á slug að breytast eða ekki?
     const category = await prisma.categories.update({
         where: {
-            slug: slug
+            slug: safeSlug
         },
         data: {
             title: safeTitle

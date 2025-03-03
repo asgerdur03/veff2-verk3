@@ -1,12 +1,13 @@
 import { z } from 'zod';
-import { PrismaClient } from "@prisma/client";
-import exp from 'constants';
+//import { PrismaClient } from "@prisma/client";
 import xss from 'xss';
 
-let prisma = new PrismaClient();
+import prisma from './client.js';
+
+//let prisma = new PrismaClient();
 // það er ekki hægt að starta of mörgum prisma clients, þá fer allt í rugl
 
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const answersSchema = z.object({
     id: z.number(),
     questionId: z.number(),
@@ -22,6 +23,7 @@ const answerToCreateSchema = z.object({
 
 type Answer = z.infer<typeof answersSchema>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const questionSchema = z.object({
     id: z.number(),
     categoryId: z.number(),
@@ -44,7 +46,12 @@ type Question = z.infer<typeof questionSchema>
 export async function getQuestions(limit=10, offset?: number): Promise<Array<Question>> {
 
     // veit ekki afh það er rautt, því það er að sækja allar spurningar
-    const questions =  await prisma.questions.findMany()
+    const questions =  await prisma.questions.findMany(
+        {
+            take: limit,
+            skip: offset
+        }
+    )
 
     return questions
 }
@@ -143,10 +150,10 @@ export async function editAnswer(answerId: number, answer: z.infer<typeof answer
     
 }
 
-export async function getAnswersByQuestionId(questionId: any): Promise<Array<Answer|null>> {
+export async function getAnswersByQuestionId(questionId: number): Promise<Array<Answer|null>> {
     const answers = await prisma.answers.findMany({
         where: {
-            questionId: parseInt(questionId), // questionId
+            questionId: questionId, // questionId
         }
     })
     return answers ?? null;

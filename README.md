@@ -3,14 +3,36 @@
 RESTful CRUD vefþjónusta með Hono, prisma og typescript
 
 
+
 ### Run using hono
 ```
 npm install
 npm run dev
 ```
-
 ```
 open http://localhost:3000
+```
+
+### Add database using prisma
+Fill out .env file with patgh to local database (see .env.example)
+
+```
+npx prisma generate
+npx prisma migrate dev --name init
+
+
+```
+
+### Run tests
+```
+npm run test
+
+```
+
+### Run lint
+```
+npm run lint
+
 ```
 
 ## TODO
@@ -47,13 +69,14 @@ Answers (seperate or )
 
 Annað 
 
-- [ ] Setja upp automatic database með prisma Seeding
 - [x] Nota Zod fyrir staðfestingu gagan (bæta við kröfum í questions)
 - [x] nota xss fyrir skráningu gagna
-- [ ] Setja upp próf
+- [x] Setja upp próf
 - [x] Github actions (laga fyrir skil)
 - [ ] Setja upp vef á t.d render, tengt við postgres og github
 - [ ] Bæta kennurum í repo
+- [x] Eslint
+
 ----
 
 - [x] 40% — Vefþjónustur útfærðar með Hono.

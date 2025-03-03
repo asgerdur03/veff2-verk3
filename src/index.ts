@@ -29,10 +29,13 @@ import {
 const app = new Hono()
 
 app.get('/', (c) => {
-  const data = {
-    hello: 'hono'
-  }
-  return c.json(data)
+  const routes = app.routes.map((route) => {
+    return {
+      method: route.method,
+      path: route.path,
+    }
+  });
+  return c.json(routes)
 })
 
 // CATEGORIES
@@ -209,7 +212,7 @@ app.get('/questions/:id', async(c) => {
 
 app.delete('/questions/:id', async(c) => {
   const id = parseInt(c.req.param('id'));
-  let questToDelete;
+  
 
   try {
       const question = await getQuestion(id);
@@ -218,7 +221,7 @@ app.delete('/questions/:id', async(c) => {
       if (!question) {
           return c.json({error: 'Question not found'}, 404);
       }
-      questToDelete = await deleteQuestion(id);
+      await deleteQuestion(id);
   }
   catch (error) {
       console.error(error);
@@ -235,8 +238,9 @@ app.post('/questions', async(c) => {
   try {
     questionToCreate = await c.req.json();
 
-  } catch (error) {
-    return c.json({error: 'invalid json'}, 400);
+  } catch (e) {
+    console.error(e);
+    return c.json({error: 'invalid json', }, 400);
   }
 
   const validQuestion = validateQuestion(questionToCreate);
@@ -282,6 +286,7 @@ app.post('/answers', async(c) => {
     answerToCreate = await c.req.json();
 
   } catch (error) {
+    console.error(error);
     return c.json({error: 'invalid json'}, 400);
   }
 
@@ -323,7 +328,7 @@ app.patch('/answers/:id', async(c) => {
 app.get('/answers/question/:id', async(c) => {
 
   try {
-    const questionId = c.req.param('id');
+    const questionId = parseInt(c.req.param('id'));
     
     const answers = await getAnswersByQuestionId(questionId);
     console.log("answers", answers);
@@ -368,7 +373,7 @@ app.get('/answers/:id', async(c) => {
 
 app.delete('/answers/:id', async(c) => {
   const id = parseInt(c.req.param('id'));
-  let answerToDelete;
+  
 
   try {
       const answer = await getAnswer(id);
@@ -377,7 +382,7 @@ app.delete('/answers/:id', async(c) => {
       if (!answer) {
           return c.json({error: 'Answer not found'}, 404);
       }
-      answerToDelete = await deleteAnswer(id);
+      await deleteAnswer(id);
   }
   catch (error) {
       console.error(error);
@@ -409,3 +414,6 @@ serve({
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
 })
+
+
+export default app;
