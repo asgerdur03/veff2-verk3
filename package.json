@@ -5,7 +5,9 @@
     "dev": "tsx watch src/index.ts",
     "test": "vitest",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix"
+    "lint:fix": "eslint src --ext .ts --fix",
+    "build": "tsc ",
+    "start": "node ./dist/src/index.js"
     },
   "dependencies": {
     "@hono/node-server": "^1.13.8",
