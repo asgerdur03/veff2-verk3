@@ -25,8 +25,11 @@ import {
     validateQuestion,
     validateAnswer
   } from './questions.db.js'
+import { cors } from 'hono/cors'
 
 const app = new Hono()
+
+app.use(cors());
 
 app.get('/', (c) => {
   const routes = app.routes.map((route) => {
